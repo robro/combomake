@@ -1,0 +1,30 @@
+#NoEnv
+#MaxHotkeysPerInterval 99000000
+#HotkeyInterval 99000000
+#KeyHistory 0
+ListLines Off
+Process, Priority, , H
+SetBatchLines, -1
+SetKeyDelay, -1, -1
+SetMouseDelay, -1
+SetDefaultMouseSpeed, 0
+SetWinDelay, -1
+SetControlDelay, -1
+SendMode Input
+
+!^z:: ; Ctrl+Alt+Z
+DllCall("Winmm\timeBeginPeriod", UInt, 1)
+DllCall("Sleep", UInt, 100)
+
+; BEGIN COMBO
+
+
+; END COMBO
+
+DllCall("Winmm\timeEndPeriod", UInt, 1)
+
+return
+
+Esc::
+DllCall("Winmm\timeEndPeriod", UInt, 1)
+ExitApp 0
