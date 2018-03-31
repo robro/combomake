@@ -135,15 +135,18 @@ def getTimingStr(command, is_switched=False):
 
 
 def main():
+  # Set-up argument parser
   parser = argparse.ArgumentParser()
   parser.add_argument('filename')
   args = parser.parse_args()
 
   combo_filename = os.path.abspath(args.filename)
 
+  # Store combo strings into list
   with open(combo_filename, 'r') as combo_file:
     combo_strings = combo_file.read().lower().split()
 
+  # First string should be the starting character
   character = combo_strings.pop(0)
   if not getattr(timing, character, False):
     print 'Error: Unknown character:', character
@@ -155,28 +158,30 @@ def main():
   is_switched = False
 
   for string in combo_strings:
-    # side switch
+    # Side switch
     if string == 'ss':
       is_switched = False if is_switched else True
 
-    # custom delay
+    # Custom delay
     elif string.startswith('d:'):
       timing_str += '_' + string[2:]
 
-    # change character
+    # Change character
     elif string.startswith('c:'):
       character = string[2:]
       if not getattr(timing, character, False):
         print 'Error: Unknown character:', character
         sys.exit(1)
 
-    # custom button(s) press or hold
-    # syntax: {str|list buttons, int hold_frames, int delay_frames} (no spaces)
-    # example: {'2s',1,50}
+    # Custom button(s) press or hold
+    # Syntax: {str|list buttons, int frames} (no whitespace)
+    # Positive frames for press, negative frames for hold
+    # Example: {'2s',-50} = hold 2S for 50 frames
     elif string.startswith('{') and string.endswith('}'):
       command = eval('[%s]' % string[1:-1])
       timing_str += getTimingStr(command, is_switched)
 
+    # Standard timing search in timing file
     else:
       timing_data = getTiming(string, character)
 
@@ -200,7 +205,7 @@ def main():
   input_mode = ''
   delay_frames = 0
 
-  # Use timing string to build list of ahk commands
+  # Use timing string to build list of AHK commands
   for char in timing_str:
     if char in ['*', '^', '_', ':']:
       if input_mode == 'down':
@@ -249,6 +254,7 @@ def main():
 
   insert_line = 20
 
+  # Write AHK file
   with open(hotkey_filename, 'w') as hotkey_file:
     hotkey_file.writelines(template_lines[:insert_line])
     hotkey_file.writelines(hotkey_lines)
