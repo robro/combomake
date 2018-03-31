@@ -111,9 +111,18 @@ def getTiming(string, character):
 
 def getTimingStr(command, is_switched=False):
   buttons = command[0]
-  hold_frames = command[1]
-  delay_frames = command[2]
+  hold_frames = 1
+  delay_frames = 1
   key_str = ''
+
+  if len(command) > 1:
+    if command[1] > 1:
+      hold_frames = command[1]
+    elif command[1] < -1:
+      delay_frames = command[1]
+    else:
+      print 'Error: Invalid timing value:', command[1]
+      sys.exit(1)
 
   for button in buttons:
     if is_switched and button.isdigit():
