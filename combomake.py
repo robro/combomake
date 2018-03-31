@@ -77,8 +77,11 @@ def delay(frames):
   return 'DllCall("Sleep", UInt, %s)\n' % delay_frames
 
 
-def buffer(string):
-  prebutton_count = len(re.findall(r'\d(?=\d)', string))
+def buffer(timing_data):
+  prebutton_count = 0
+  for command in timing_data:
+    if len(command) == 1 and len(command[0]) == 1:
+      prebutton_count += 1
 
   return prebutton_count * -2
 
@@ -189,8 +192,8 @@ def main():
         print 'Error: Unrecognized string:', string
         sys.exit(1)
 
-      if timing_str and buffer(string):
-        timing_str += '_%s' % buffer(string)
+      if timing_str and buffer(timing_data):
+        timing_str += '_%s' % buffer(timing_data)
 
       for command in timing_data:
         timing_str += getTimingStr(command, is_switched)
