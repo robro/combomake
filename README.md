@@ -1,7 +1,7 @@
 # combomake
 Python script that generates an AutoHotkey script to perform a combo in Dragon Ball FighterZ.
 
-Reads modified numpad notation from a user-specified file and converts it to AHK commands, eg:
+Reads modified numpad notation from a user-specified file and converts it to AHK commands:
 
     goku 5m 2m 214l
 
@@ -27,28 +27,28 @@ becomes:
     DllCall("Sleep", UInt, 16.67)
     Send {a up}{j up}
 
-The first word (one or more non-whitespace characters followed by whitespace) of the input notation must be a recognized character's name. If you want to switch characters mid-combo, they must be specified with 'c:' immediately followed by that character's name, eg:
+The first word (one or more non-whitespace characters followed by whitespace) of the input notation must be a recognized character's name. If you want to switch characters mid-combo, they must be specified with "c:" immediately followed by that character's name:
 
     goku 2h zc1 c:vegeta jlll
 
-This is because move timing is read from 'timing.py' to calculate the necessary delays specific to each characters' moves.
+This is because move timing is read from "timing.py" to calculate the necessary delays specific to each characters' moves.
 
-Additional custom delay timing can be specified in the input notation with 'd:' immediately followed by an integer value, eg:
+Additional custom delay timing can be specified in the input notation with "d:" immediately followed by an integer value:
 
     2m d:5 5m = press 5M five frames later than usual
 
-Custom delays can be negative integers as well, eg:
+Custom delays can be negative integers as well:
 
     js d:-3 5m = press 5M three frames earlier than usual
 
-Custom button combinations and timing can also be specified with a list of at least one value inside curly braces with no whitespace in between. The first value must be a string which represents one or more simultaneous button presses, and the second (optional) value must be an integer representing the number of frames until the next input. A positive integer means press and release followed by a delay of that many frames, while a negative integer means hold for that many frames followed by a release, eg:
+Custom button combinations and timing can also be specified with a list of at least one value inside curly braces with no whitespace in between. The first value must be a string which represents one or more simultaneous button presses, and the second (optional) value must be an integer representing the number of frames until the next input. A positive integer means press and release followed by a delay of that many frames, while a negative integer means hold for that many frames followed by a release:
 
     {'2s',-50} = hold 2S for 50 frames
 
  If no second value is present, the delay is assumed to be 1 frame.
 
- The character is assumed to be facing to the right (P1 side) by default, but a mid-combo side switch can be signified with the notation 'ss', eg:
+ The character is assumed to be facing to the right (P1 side) by default, but a mid-combo side switch can be signified with the notation "ss":
 
     2m 5m jc jlll vanish ss 236l+m
 
-Key mappings can be modified in 'keys.py'.
+Key mappings can be modified in "keys.py".
