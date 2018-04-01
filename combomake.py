@@ -71,14 +71,12 @@ def keyUp(keys):
 
 
 def delay(frames):
-  frame_time = 16.67
-  delay_frames = frames * frame_time
-
-  return 'DllCall("Sleep", UInt, %s)\n' % delay_frames
+  return 'DllCall("Sleep", UInt, %s)\n' % (frames * 16.67)
 
 
 def buffer(timing_data):
   prebutton_count = 0
+  
   for command in timing_data:
     if len(command) == 1 and len(command[0]) == 1:
       prebutton_count += 1
@@ -87,7 +85,7 @@ def buffer(timing_data):
 
 
 def switch(direction):
-  switch_map = {
+  return {
     '1': '3',
     '2': '2',
     '3': '1',
@@ -97,9 +95,7 @@ def switch(direction):
     '7': '9',
     '8': '8',
     '9': '7',
-  }
-
-  return switch_map[direction]
+  }[direction]
 
 
 def getTiming(string, character):
