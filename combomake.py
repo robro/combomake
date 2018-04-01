@@ -1,48 +1,4 @@
 #!/usr/bin/env python
-
-# Make an AutoHotkey script that performs a combo in Dragon Ball FighterZ.
-#
-# Reads modified numpad notation from a user-specified file
-# and converts it to AHK commands, eg:
-#
-#   goku
-#   5m 2m 214l
-#
-# becomes
-#
-#   Send {u down}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {u up}
-#   DllCall("Sleep", UInt, 316.73)
-#   Send {s down}{u down}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {s up}{u up}
-#   DllCall("Sleep", UInt, 266.72)
-#   Send {s down}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {s up}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {s down}{a down}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {s up}{a up}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {a down}{j down}
-#   DllCall("Sleep", UInt, 16.67)
-#   Send {a up}{j up}
-#
-# This script uses timing info from 'timing.py' to calculate
-# the delays specific to each characters' moves.
-#
-# Custom delay timing can also be specified in the combo notation, eg:
-#
-#   2m d:5 5m (5M is pressed 5 frames later)
-#
-# Custom delays can be negative as well, eg:
-#
-#   js d:-3 5m (5M is pressed 3 frames earlier)
-#
-# Key mapping can be changed in 'keys.py'.
-
 import os
 import re
 import sys
@@ -180,9 +136,7 @@ def main():
         sys.exit(1)
 
     # Custom button(s) press or hold
-    # Syntax: {str|list buttons, int frames} (no whitespace)
-    # Positive frames for press, negative frames for hold
-    # Example: {'2s',-50} = hold 2S for 50 frames
+    # Syntax: {str|list buttons, int frames=1} (no whitespace)
     elif string.startswith('{') and string.endswith('}'):
       command = eval('[%s]' % string[1:-1])
       timing_str += getTimingStr(command, is_switched)
