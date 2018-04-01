@@ -1,4 +1,5 @@
-# syntax: [str|list buttons, int hold_frames, int delay_frames]
+# Syntax: [str|list buttons, int frames=1]
+# Positive frames for press, negative frames for hold
 
 universal = {
   'sd': [['hs', 41]], # super dash

@@ -76,7 +76,7 @@ def delay(frames):
 
 def buffer(timing_data):
   prebutton_count = 0
-  
+
   for command in timing_data:
     if len(command) == 1 and len(command[0]) == 1:
       prebutton_count += 1
@@ -85,7 +85,7 @@ def buffer(timing_data):
 
 
 def switch(direction):
-  return {
+  num_map = {
     '1': '3',
     '2': '2',
     '3': '1',
@@ -95,7 +95,11 @@ def switch(direction):
     '7': '9',
     '8': '8',
     '9': '7',
-  }[direction]
+  }
+  if direction in num_map:
+    return num_map[direction]
+
+  return -1
 
 
 def getTiming(string, character):
@@ -126,6 +130,9 @@ def getTimingStr(command, is_switched=False):
   for button in buttons:
     if is_switched and button.isdigit():
       button = switch(button)
+      if button == -1:
+        print 'Error: Unrecognized input:', button
+        sys.exit(1)
 
     for key in keys.mapping[button]:
       key_str += key
