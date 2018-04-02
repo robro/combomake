@@ -79,9 +79,9 @@ def getTimingStr(command, is_switched=False):
 
   if len(command) > 1:
     if command[1] > 1:
-      delay_frames = command[1]
+      delay_frames = command[1] - 1
     elif command[1] < -1:
-      hold_frames = command[1]
+      hold_frames = -command[1] - 1
     else:
       print 'Error: Invalid timing value:', command[1]
       sys.exit(1)
@@ -127,6 +127,13 @@ def main():
     if string == 'ss':
       is_switched = False if is_switched else True
 
+    # Change character
+    elif string.startswith('c:'):
+      character = string[2:]
+      if not getattr(timing, character, False):
+        print 'Error: Unknown character:', character
+        sys.exit(1)
+
     # Custom delay
     elif string.startswith('d:'):
       delay_index = timing_str.rfind('_') + 1
@@ -138,13 +145,6 @@ def main():
         sys.exit(1)
 
       timing_str = timing_str[:delay_index] + str(new_delay)
-
-    # Change character
-    elif string.startswith('c:'):
-      character = string[2:]
-      if not getattr(timing, character, False):
-        print 'Error: Unknown character:', character
-        sys.exit(1)
 
     # Custom button(s) press or hold
     # Syntax: {str|list buttons, int frames=1} (no whitespace)
