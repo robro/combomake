@@ -8,7 +8,8 @@ import keys
 import timing
 
 
-def keyDown(keys):
+def keyDown(match_obj):
+  keys = match_obj.group(0)[1:]
   key_string = ''
 
   for key in keys:
@@ -17,7 +18,8 @@ def keyDown(keys):
   return 'Send %s\n' % key_string
 
 
-def keyUp(keys):
+def keyUp(match_obj):
+  keys = match_obj.group(0)[1:]
   key_string = ''
 
   for key in keys:
@@ -26,7 +28,8 @@ def keyUp(keys):
   return 'Send %s\n' % key_string
 
 
-def delay(frames):
+def delay(match_obj):
+  frames = int(match_obj.group(0)[1:])
   return 'DllCall("Sleep", UInt, %s)\n' % (frames * 16.67)
 
 
@@ -108,13 +111,13 @@ def main():
   with open(combo_filename, 'r') as combo_file:
     combo_strings = combo_file.read().lower().split()
 
+  print 'Combo:', ' '.join(combo_strings)
+
   # First string should be the starting character
   character = combo_strings.pop(0)
   if not getattr(timing, character, False):
     print 'Error: Unknown character:', character
     sys.exit(1)
-
-  print 'Combo:', ' '.join(combo_strings)
 
   timing_str = ''
   is_switched = False
@@ -126,7 +129,15 @@ def main():
 
     # Custom delay
     elif string.startswith('d:'):
-      timing_str += '_' + string[2:]
+      delay_index = timing_str.rfind('_') + 1
+      last_delay = int(timing_str[delay_index:])
+      new_delay = last_delay + int(string[2:])
+
+      if new_delay < 1:
+        print 'Error: Invalid delay:', new_delay
+        sys.exit(1)
+
+      timing_str = timing_str[:delay_index] + str(new_delay)
 
     # Change character
     elif string.startswith('c:'):
@@ -150,57 +161,29 @@ def main():
         sys.exit(1)
 
       if timing_str and buffer(timing_data):
-        timing_str += '_%s' % buffer(timing_data)
+        delay_index = timing_str.rfind('_') + 1
+        last_delay = int(timing_str[delay_index:])
+        new_delay = last_delay + buffer(timing_data)
+
+        if new_delay < 1:
+          print 'Error: Invalid delay:', new_delay
+          sys.exit(1)
+
+        timing_str = timing_str[:delay_index] + str(new_delay)
 
       for command in timing_data:
         timing_str += getTimingStr(command, is_switched)
 
-  # Replace final delay with end symbol
-  timing_str = timing_str[:timing_str.rfind('_')] + ':'
+  # Truncate final delay
+  timing_str = timing_str[:timing_str.rfind('_')]
 
   print 'Timing:', timing_str, '\n'
 
-  hotkey_lines = []
-  input_str = ''
-  input_mode = ''
-  delay_frames = 0
-
-  # Use timing string to build list of AHK commands
-  for char in timing_str:
-    if char in ['*', '^', '_', ':']:
-      if input_mode == 'down':
-        hotkey_lines.append(keyDown(input_str))
-
-      elif input_mode == 'up':
-        hotkey_lines.append(keyUp(input_str))
-
-      elif input_mode == 'delay':
-        delay_frames += int(input_str)
-
-        if char != '_':
-          if delay_frames < 0:
-            print 'Error: Invalid delay:', delay_frames
-            sys.exit(1)
-
-          if delay_frames > 0:
-            hotkey_lines.append(delay(delay_frames))
-            delay_frames = 0
-
-      input_str = ''
-
-    if char == ':':
-      break
-    if char == '*':
-      input_mode = 'down'
-      continue
-    if char == '^':
-      input_mode = 'up'
-      continue
-    if char == '_':
-      input_mode = 'delay'
-      continue
-  
-    input_str += char
+  # Replace timing notation with AHK commands
+  hotkey_str = timing_str
+  hotkey_str = re.sub(r'\*[^*^_]+', keyDown, hotkey_str)
+  hotkey_str = re.sub(r'\^[^^_]+', keyUp, hotkey_str)
+  hotkey_str = re.sub(r'\_\d+', delay, hotkey_str)
 
   ext_index = combo_filename.rfind('.')
 
@@ -217,7 +200,7 @@ def main():
   # Write AHK file
   with open(hotkey_filename, 'w') as hotkey_file:
     hotkey_file.writelines(template_lines[:insert_line])
-    hotkey_file.writelines(hotkey_lines)
+    hotkey_file.write(hotkey_str)
     hotkey_file.writelines(template_lines[insert_line:])
 
   print 'AutoHotkey file saved to:', hotkey_filename
