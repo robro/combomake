@@ -181,9 +181,9 @@ def main():
 
   # Replace timing notation with AHK commands
   hotkey_str = timing_str
-  hotkey_str = re.sub(r'\*[^*^_]+', keyDown, hotkey_str)
-  hotkey_str = re.sub(r'\^[^^_]+', keyUp, hotkey_str)
-  hotkey_str = re.sub(r'\_\d+', delay, hotkey_str)
+  hotkey_str = re.sub(r'\*[^_]+', keyDown, hotkey_str)
+  hotkey_str = re.sub(r'\^[^_]+', keyUp, hotkey_str)
+  hotkey_str = re.sub(r'_\d+', delay, hotkey_str)
 
   ext_index = combo_filename.rfind('.')
 
