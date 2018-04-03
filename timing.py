@@ -9,13 +9,14 @@ universal = {
   'zc2': [[['6', 'a2']]], # z-change 2
   'sparking': [['lmhs', 46]],
   'vanish': [['mh', 60]],
-  '[vanish]': [['mh', -30]], # empty vanish
+  '[vanish]': [['mh', -28]], # empty vanish
   'dash': [['6'], ['6', 4]],
   'ad': [['6'], ['6', 6]], # air dash
   'iad': [['9', 7], ['6', 6]], # instant air dash
   'jc': [['8', 5]], # jump cancel neutral
   'jcf': [['9', 5]], # jump cancel forward
   'jcb': [['7', 5]], # jump cancel backward
+  'sjf': [['2'], ['9', 5]],
 }
 
 goku = {
@@ -78,6 +79,19 @@ goku = {
   'j236l+m[2]': [['2'], ['3'], ['6lm'], ['2', -79]],
   'j236h+s': [['2'], ['3'], ['6hs', 106]],
   '214l+m': [['2'], ['1'], ['4lm']],
+}
+
+trunks = {
+  '5m': [['m', 20]],
+  '2m': [['2m', 23]],
+  '5h!': [['2m', 38]],
+  '5s': [['s', 23]],
+  'jl': [['l', 14]],
+  'jm': [['m', 21]],
+  'jh': [['h', 28]],
+  'js': [['s', 24]],
+  'jlll': [['l', 14], ['l', 21], ['l', 28]],
+  '236s': [['2'], ['3'], ['6s', 31]],
 }
 
 broly = {
