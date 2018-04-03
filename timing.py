@@ -17,7 +17,7 @@ universal = {
   'jcf': [['9', 5]], # jump cancel forward
   'jcb': [['7', 5]], # jump cancel backward
   'sjf': [['2'], ['9', 5]],
-  '[dr]': [['lm', -108]],
+  '[dr]': [['lm', -112]],
 }
 
 goku = {
@@ -84,6 +84,7 @@ goku = {
 
 trunks = {
   '5m': [['m', 20]],
+  '5mm': [['m', 20], ['m', 23]],
   '2m': [['2m', 23]],
   '5h': [['h', 29]],
   '5h!': [['h', 38]],

@@ -136,15 +136,30 @@ def main():
 
     # Custom delay
     elif string.startswith('d:'):
-      delay_index = timing_str.rfind('_') + 1
-      last_delay = int(timing_str[delay_index:])
-      new_delay = last_delay + int(string[2:])
+      delay_index = timing_str.rfind('_')
+      last_delay = int(timing_str[delay_index+1:])
 
-      if new_delay < 1:
-        print 'Error: Invalid delay:', new_delay
-        sys.exit(1)
+      if last_delay == 1:
+        release_index = timing_str.rfind('^')
+        hold_index = timing_str[:delay_index].rfind('_')
+        last_hold = int(timing_str[hold_index+1:release_index])
 
-      timing_str = timing_str[:delay_index] + str(new_delay)
+        new_hold = last_hold + int(string[2:])
+
+        if new_hold < 1:
+          print 'Error: Invalid delay:', new_hold
+          sys.exit(1)
+
+        timing_str = timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
+
+      else:
+        new_delay = last_delay + int(string[2:])
+
+        if new_delay < 1:
+          print 'Error: Invalid delay:', new_delay
+          sys.exit(1)
+
+        timing_str = timing_str[:delay_index+1] + str(new_delay)
 
     # Custom button(s) press or hold
     # Syntax: {str|list buttons, int frames=1} (no whitespace)
@@ -161,15 +176,30 @@ def main():
         sys.exit(1)
 
       if timing_str and buffer(timing_data):
-        delay_index = timing_str.rfind('_') + 1
-        last_delay = int(timing_str[delay_index:])
-        new_delay = last_delay + buffer(timing_data)
+        delay_index = timing_str.rfind('_')
+        last_delay = int(timing_str[delay_index+1:])
 
-        if new_delay < 1:
-          print 'Error: Invalid delay:', new_delay
-          sys.exit(1)
+        if last_delay == 1:
+          release_index = timing_str.rfind('^')
+          hold_index = timing_str[:delay_index].rfind('_')
+          last_hold = int(timing_str[hold_index+1:release_index])
 
-        timing_str = timing_str[:delay_index] + str(new_delay)
+          new_hold = last_hold + buffer(timing_data)
+
+          if new_hold < 1:
+            print 'Error: Invalid delay:', new_hold
+            sys.exit(1)
+
+          timing_str = timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
+
+        else:
+          new_delay = last_delay + buffer(timing_data)
+
+          if new_delay < 1:
+            print 'Error: Invalid delay:', new_delay
+            sys.exit(1)
+
+          timing_str = timing_str[:delay_index+1] + str(new_delay)
 
       for command in timing_data:
         timing_str += getTimingStr(command, is_switched)
