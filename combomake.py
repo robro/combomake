@@ -99,6 +99,33 @@ def getTimingStr(command, is_switched=False):
   return '*{0}_{1}^{0}_{2}'.format(key_str, hold_frames, delay_frames)
 
 
+def newTiming(timing_str, frames):
+  delay_index = timing_str.rfind('_')
+  last_delay = int(timing_str[delay_index+1:])
+
+  if frames < 0 and last_delay == 1:
+    # Try modifying the hold value instead
+    hold_index = timing_str[:delay_index].rfind('_')
+    release_index = timing_str.rfind('^')
+    last_hold = int(timing_str[hold_index+1:release_index])
+
+    new_hold = last_hold + frames
+
+    if new_hold < 1:
+      print 'Error: Invalid delay:', new_hold
+      sys.exit(1)
+
+    return timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
+
+  new_delay = last_delay + frames
+
+  if new_delay < 1:
+    print 'Error: Invalid delay:', new_delay
+    sys.exit(1)
+
+  return timing_str[:delay_index+1] + str(new_delay)
+
+
 def main():
   # Set-up argument parser
   parser = argparse.ArgumentParser()
@@ -136,31 +163,7 @@ def main():
 
     # Custom delay
     elif string.startswith('d:'):
-      custom_delay = int(string[2:])
-      delay_index = timing_str.rfind('_')
-      last_delay = int(timing_str[delay_index+1:])
-
-      if custom_delay < 0 and last_delay == 1:
-        release_index = timing_str.rfind('^')
-        hold_index = timing_str[:delay_index].rfind('_')
-        last_hold = int(timing_str[hold_index+1:release_index])
-
-        new_hold = last_hold + custom_delay
-
-        if new_hold < 1:
-          print 'Error: Invalid delay:', new_hold
-          sys.exit(1)
-
-        timing_str = timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
-
-      else:
-        new_delay = last_delay + custom_delay
-
-        if new_delay < 1:
-          print 'Error: Invalid delay:', new_delay
-          sys.exit(1)
-
-        timing_str = timing_str[:delay_index+1] + str(new_delay)
+      timing_str = newTiming(timing_str, int(string[2:]))
 
     # Custom button(s) press or hold
     # Syntax: {str|list buttons, int frames=1} (no whitespace)
@@ -176,32 +179,11 @@ def main():
         print 'Error: Unrecognized string:', string
         sys.exit(1)
 
-      if timing_str and buffer(timing_data):
-        delay_index = timing_str.rfind('_')
-        last_delay = int(timing_str[delay_index+1:])
+      buffer_frames = buffer(timing_data)
 
-        if last_delay == 1:
-          release_index = timing_str.rfind('^')
-          hold_index = timing_str[:delay_index].rfind('_')
-          last_hold = int(timing_str[hold_index+1:release_index])
-
-          new_hold = last_hold + buffer(timing_data)
-
-          if new_hold < 1:
-            print 'Error: Invalid delay:', new_hold
-            sys.exit(1)
-
-          timing_str = timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
-
-        else:
-          new_delay = last_delay + buffer(timing_data)
-
-          if new_delay < 1:
-            print 'Error: Invalid delay:', new_delay
-            sys.exit(1)
-
-          timing_str = timing_str[:delay_index+1] + str(new_delay)
-
+      if timing_str and buffer_frames:
+          timing_str = newTiming(timing_str, buffer_frames)
+          
       for command in timing_data:
         timing_str += getTimingStr(command, is_switched)
 
