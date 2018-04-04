@@ -136,15 +136,16 @@ def main():
 
     # Custom delay
     elif string.startswith('d:'):
+      custom_delay = int(string[2:])
       delay_index = timing_str.rfind('_')
       last_delay = int(timing_str[delay_index+1:])
 
-      if last_delay == 1:
+      if custom_delay < 0 and last_delay == 1:
         release_index = timing_str.rfind('^')
         hold_index = timing_str[:delay_index].rfind('_')
         last_hold = int(timing_str[hold_index+1:release_index])
 
-        new_hold = last_hold + int(string[2:])
+        new_hold = last_hold + custom_delay
 
         if new_hold < 1:
           print 'Error: Invalid delay:', new_hold
@@ -153,7 +154,7 @@ def main():
         timing_str = timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
 
       else:
-        new_delay = last_delay + int(string[2:])
+        new_delay = last_delay + custom_delay
 
         if new_delay < 1:
           print 'Error: Invalid delay:', new_delay
