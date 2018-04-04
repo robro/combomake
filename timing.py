@@ -16,8 +16,10 @@ universal = {
   'jc': [['8', 5]], # jump cancel neutral
   'jcf': [['9', 5]], # jump cancel forward
   'jcb': [['7', 5]], # jump cancel backward
-  'sjf': [['2'], ['9', 5]],
-  '[dr]': [['lm', -112]],
+  'sj': [['2'], ['8', 5]], # super jump neutral
+  'sjf': [['2'], ['9', 5]], # super jump forward
+  'sjb': [['2'], ['7', 5]], # super jump backward
+  '[dr]': [['lm', -113]], # dragon rush (hold)
 }
 
 goku = {
