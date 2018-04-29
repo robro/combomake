@@ -112,6 +112,7 @@ def newTiming(timing_str, frames):
     new_hold = last_hold + frames
 
     if new_hold < 1:
+      print timing_str
       print 'Error: Invalid delay:', new_hold
       sys.exit(1)
 
@@ -120,6 +121,7 @@ def newTiming(timing_str, frames):
   new_delay = last_delay + frames
 
   if new_delay < 1:
+    print timing_str
     print 'Error: Invalid delay:', new_delay
     sys.exit(1)
 
