@@ -122,7 +122,7 @@ def newTiming(timing_str, frames):
 
   if new_delay < 1:
     print timing_str
-    print 'Error: Invalid delay:', new_delay
+    print 'ERROR: Invalid delay:', new_delay
     sys.exit(1)
 
   return timing_str[:delay_index+1] + str(new_delay)
