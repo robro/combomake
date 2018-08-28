@@ -8,6 +8,7 @@ H     = 'i'
 S     = 'p'
 A1    = 'k'
 A2    = ';'
+play  = 'm'
 
 mapping = {
   '1': [down, left],
@@ -25,4 +26,5 @@ mapping = {
   's': [S],
   'a1': [A1],
   'a2': [A2],
+  'play': [play],
 }
