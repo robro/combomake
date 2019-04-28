@@ -83,14 +83,14 @@ def getTimingStr(command, is_switched=False):
     elif command[1] < -1:
       hold_frames = -command[1] - 1
     else:
-      print 'Error: Invalid timing value:', command[1]
+      print('Error: Invalid timing value:', command[1])
       sys.exit(1)
 
   for button in buttons:
     if is_switched and button.isdigit():
       button = switch(button)
       if button == -1:
-        print 'Error: Unrecognized input:', button
+        print('Error: Unrecognized input:', button)
         sys.exit(1)
 
     for key in keys.mapping[button]:
@@ -112,8 +112,8 @@ def newTiming(timing_str, frames):
     new_hold = last_hold + frames
 
     if new_hold < 1:
-      print timing_str
-      print 'Error: Invalid delay:', new_hold
+      print(timing_str)
+      print('Error: Invalid delay:', new_hold)
       sys.exit(1)
 
     return timing_str[:hold_index+1] + str(new_hold) + timing_str[release_index:]
@@ -121,8 +121,8 @@ def newTiming(timing_str, frames):
   new_delay = last_delay + frames
 
   if new_delay < 1:
-    print timing_str
-    print 'ERROR: Invalid delay:', new_delay
+    print(timing_str)
+    print('ERROR: Invalid delay:', new_delay)
     sys.exit(1)
 
   return timing_str[:delay_index+1] + str(new_delay)
@@ -140,12 +140,12 @@ def main():
   with open(combo_filename, 'r') as combo_file:
     combo_strings = combo_file.read().lower().split()
 
-  print 'Combo:', ' '.join(combo_strings)
+  print('Combo:', ' '.join(combo_strings))
 
   # First string should be the starting character
   character = combo_strings.pop(0)
   if not getattr(timing, character, False):
-    print 'Error: Unknown character:', character
+    print('Error: Unknown character:', character)
     sys.exit(1)
 
   timing_str = ''
@@ -160,7 +160,7 @@ def main():
     elif string.startswith('c:'):
       character = string[2:]
       if not getattr(timing, character, False):
-        print 'Error: Unknown character:', character
+        print('Error: Unknown character:', character)
         sys.exit(1)
 
     # Custom delay
@@ -178,7 +178,7 @@ def main():
       timing_data = getTiming(string, character)
 
       if not timing_data:
-        print 'Error: Unrecognized string:', string
+        print('Error: Unrecognized string:', string)
         sys.exit(1)
 
       buffer_frames = buffer(timing_data)
@@ -192,7 +192,7 @@ def main():
   # Truncate final delay
   timing_str = timing_str[:timing_str.rfind('_')]
 
-  print 'Timing:', timing_str, '\n'
+  print('Timing:', timing_str, '\n')
 
   # Replace timing notation with AHK commands
   hotkey_str = timing_str
@@ -218,7 +218,7 @@ def main():
     hotkey_file.write(hotkey_str)
     hotkey_file.writelines(template_lines[insert_line:])
 
-  print 'AutoHotkey file saved to:', hotkey_filename
+  print('AutoHotkey file saved to:', hotkey_filename)
 
   return 0
 
